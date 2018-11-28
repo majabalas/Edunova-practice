@@ -1,0 +1,108 @@
+# baza KNJIŽNICA
+
+# islistajte ime i prezime autora te naslov kataložnog zapisa svih autora
+# koji su rođeni 1976 godine  xxxxxxxxx
+
+# izvucite sve datume rođenja autora koji su izdali knjigu kod
+# aktivnog izdavača
+
+# izvucite sve nazive mjesta u koijma je izdana knjiga koja počinje
+# s slovom B
+
+# izlistajte sva imena autora i naslove knjiga koje su izdali
+
+
+
+
+#baza classicmodels
+
+# ispišite sve nazive proizvoda u kategoriji Vlakovi
+
+# izvucite nazive proizvoda koje je prodala Murphy Diane
+
+# izvucite sva imena i prezimena zaposlenika kojima je Murphy Diane prva šefica
+
+# izvucite sva imena i prezimena zaposlenika koji nikome nisu nadređeni
+
+
+
+
+# baza KNJIŽNICA
+# islistajte ime i prezime autora te naslov kataložnog zapisa svih autora koji su rođeni 1976 godine
+# 23 rezultata
+select a.ime, a.prezime, k.naslov
+from autor a inner join katalog k
+on k.autor=a.sifra
+where 
+a.datumrodenja between '1976-01-01' and '1977-12-31';
+
+
+# izvucite sve datume rođenja autora koji su izdali knjigu kod aktivnog izdavača
+# 497 rezultata
+select a.ime, a.prezime, a.datumrodenja
+from autor a 
+inner join katalog k on k.autor=a.sifra
+inner join izdavac i on k.izdavac=i.sifra
+where 
+i.aktivan=1;
+
+
+# izvucite sve nazive mjesta u koijma je izdana knjiga koja počinje s slovom B
+# 28 rezultata
+select m.naziv, k.naslov
+from mjesto m inner join katalog k
+on k.mjesto=m.sifra
+where 
+k.naslov like 'B%';
+
+
+# izlistajte sva imena autora i naslove knjiga koje su izdali
+# 681 rezultat
+select a.ime, a.prezime, k.naslov
+from katalog k inner join autor a
+on k.autor=a.sifra
+where
+k.autor is not null and a.sifra is not null;
+
+
+
+
+#baza classicmodels
+# ispišite sve nazive proizvoda u kategoriji Vlakovi
+# 3 rezultata
+select * from productlines;
+select a.productName
+from products a inner join productlines b
+on a.productLine=b.productLine
+where 
+b.productLine='Trains';
+
+
+# izvucite nazive proizvoda koje je prodala Murphy Diane
+# 0 rezultata
+select p.productName, e.firstName, e.lastName
+from employees e 
+inner join customers c on e.employeeNumber=c.salesRepEmployeeNumber
+inner join orders o on c.customerNumber=o.customerNumber
+inner join orderdetails od on o.orderNumber=od.orderNumber
+inner join products p on od.productCode=p.productCode
+where e.employeeNumber=1002;
+
+
+# izvucite sva imena i prezimena zaposlenika kojima je Murphy Diane prva šefica
+# 2 rezultata
+select a.firstName, a.lastName, a.reportsTo, a.employeeNumber
+from employees a inner join employees b
+on a.reportsTo=b.employeeNumber
+where a.reportsTo=1002;
+
+
+# izvucite sva imena i prezimena zaposlenika koji nikome nisu nadređeni
+# 17 rezultata!
+select a.firstName, a.lastName, a.reportsTo, a.employeeNumber
+from employees a inner join employees b
+on a.reportsTo=b.employeeNumber
+where a.employeeNumber not in 
+(select a.reportsTo from employees a where a.reportsTo is not null);
+
+ 
